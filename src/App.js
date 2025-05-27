@@ -1,7 +1,7 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import './App.css';
-import Home from "./pages/Home/Home"; // for home page
-import Header from "./pages/Home/Header";  // for header page 
+import Home from "./pages/Home/Home"; 
+import Header from "./pages/Home/Header";  
 import TopBar from "./pages/Home/TopBar";  
 import RoleSelectionPage from "./pages/Login/RoleSelectionPage";
 import DonorLogin from "./pages/Login/DonorLogin";
@@ -16,7 +16,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#6a1b9a', // Light purple
+      main: '#6a1b9a',
     },
     secondary: {
       main: '#ff4d6d',
@@ -27,25 +27,38 @@ const theme = createTheme({
   },
 });
 
+function Layout() {
+  const location = useLocation();
+  const hideFooter = location.pathname === "/adminDashboard";
+
+  return (
+    <>
+      <TopBar />
+      <Header />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/select-role" element={<RoleSelectionPage />} />
+        <Route path="/login/donor" element={<DonorLogin />} />
+        <Route path="/login/needy" element={<NeedyLogin />} />
+        <Route path="/login/admin" element={<AdminLogin />} />
+        <Route path="/donor/signup" element={<DonorSignup />} />
+        <Route path="/needy/signup" element={<NeedySignup />} />
+        <Route path="/adminDashboard" element={<AdminDashboard />} />
+        {/* More routes here */}
+      </Routes>
+
+      {!hideFooter && <Footer />}
+    </>
+  );
+}
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        <TopBar />
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/select-role" element={<RoleSelectionPage />} />
-          <Route path="/login/donor" element={<DonorLogin />} />
-          <Route path="/login/needy" element={<NeedyLogin />} />
-          <Route path="/login/admin" element={<AdminLogin />} />
-          <Route path="/donor/signup" element={<DonorSignup />} />
-          <Route path="/needy/signup" element={<NeedySignup />} />
-          <Route path="/adminDashboard" element={<AdminDashboard />} />
-          {/* More routes here */}
-        </Routes>
+        <Layout />
       </Router>
-      <Footer />
     </ThemeProvider>
   );
 }
