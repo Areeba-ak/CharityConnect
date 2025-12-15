@@ -1,0 +1,219 @@
+import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  MenuItem,
+  Avatar,
+  IconButton,
+} from "@mui/material";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+
+const genders = [
+  { value: "Male", label: "Male" },
+  { value: "Female", label: "Female" },
+  { value: "Other", label: "Other" },
+];
+
+const NeedyEditProfile = () => {
+  const [profile, setProfile] = useState({
+    firstName: "Anjum",
+    lastName: "Khan",
+    email: "anjumkhan@gmail.com",
+    contact: "03001234567",
+    address: "House no 123, Karachi",
+    city: "Karachi",
+    dob: "2000-01-01",
+    gender: "Male",
+    avatar: null,
+  });
+
+  const handleChange = (e) => {
+    setProfile({ ...profile, [e.target.name]: e.target.value });
+  };
+
+  const handleAvatarChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setProfile({
+        ...profile,
+        avatar: URL.createObjectURL(e.target.files[0]),
+      });
+    }
+  };
+
+  const handleSave = () => {
+    console.log("Profile saved", profile);
+  };
+
+  return (
+    <Box sx={{ width: "100%", padding: { xs: 2, md: 0 } }}>
+      <Typography variant="h4" sx={{ mb: 3, fontWeight: 700 }}>
+        Edit Profile
+      </Typography>
+
+      <Grid container spacing={3}>
+        {/* LEFT CARD */}
+        <Grid item xs={12} md={7}>
+          <Box
+            sx={{
+              p: 3,
+              borderRadius: 3,
+              boxShadow: 3,
+              minHeight: "50vh",
+              maxWidth: "500px",
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+              Edit Your Information
+            </Typography>
+
+            <Grid container spacing={2}>
+              {/* First Name + Last Name */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="First Name"
+                  name="firstName"
+                  fullWidth
+                  value={profile.firstName}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Last Name"
+                  name="lastName"
+                  fullWidth
+                  value={profile.lastName}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              {/* Email + Contact */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Email"
+                  name="email"
+                  fullWidth
+                  value={profile.email}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Contact Number"
+                  name="contact"
+                  fullWidth
+                  value={profile.contact}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              {/* Address + City */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Address"
+                  name="address"
+                  fullWidth
+                  value={profile.address}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="City"
+                  name="city"
+                  fullWidth
+                  value={profile.city}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              {/* DOB + Gender */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Date of Birth"
+                  name="dob"
+                  type="date"
+                  fullWidth
+                  value={profile.dob}
+                  onChange={handleChange}
+                  InputLabelProps={{ shrink: true }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Gender"
+                  name="gender"
+                  select
+                  fullWidth
+                  value={profile.gender}
+                  onChange={handleChange}
+                >
+                  {genders.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
+            </Grid>
+
+            <Box textAlign="center" mt={3}>
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ borderRadius: 2, px: 4 }}
+                onClick={handleSave}
+              >
+                Save Changes
+              </Button>
+            </Box>
+          </Box>
+        </Grid>
+
+        {/* RIGHT CARD – PROFILE PICTURE */}
+        <Grid item xs={12} md={5}>
+          <Box
+            sx={{
+              p: 3,
+              borderRadius: 3,
+              boxShadow: 3,
+              textAlign: "center",
+              minHeight: "30vh",
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+              Profile Picture
+            </Typography>
+
+            <Avatar
+              src={profile.avatar || "/assets/user.png"}
+              sx={{ width: 120, height: 120, mb: 2 }}
+            />
+
+            <label htmlFor="avatar-upload">
+              <input
+                accept="image/*"
+                id="avatar-upload"
+                type="file"
+                style={{ display: "none" }}
+                onChange={handleAvatarChange}
+              />
+              <IconButton color="primary" component="span">
+                <PhotoCamera />
+              </IconButton>
+            </label>
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
+  );
+};
+
+export default NeedyEditProfile;

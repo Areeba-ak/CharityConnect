@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Container, Grid, Typography, Link, Divider } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -37,16 +38,16 @@ const Footer = () => {
               Quick Links
             </Typography>
             <Box sx={{ lineHeight: 2 }}>
-              <Link href="#" color="inherit" underline="hover" display="block">
+              <Link component={RouterLink} to="/" color="inherit" underline="hover" display="block">
                 Home
               </Link>
-              <Link href="#" color="inherit" underline="hover" display="block">
+              <Link component={RouterLink} to="/AboutUs" color="inherit" underline="hover" display="block">
                 About Us
               </Link>
-              <Link href="#" color="inherit" underline="hover" display="block">
+              <Link component={RouterLink} to="/NewsStories" color="inherit" underline="hover" display="block">
                 News & Stories
               </Link>
-              <Link href="#" color="inherit" underline="hover" display="block">
+              <Link component={RouterLink} to="/ContactUs" color="inherit" underline="hover" display="block">
                 Contact Us
               </Link>
             </Box>

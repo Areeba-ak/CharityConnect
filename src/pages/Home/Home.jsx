@@ -8,7 +8,7 @@ const Home = () => {
   const [index, setIndex] = useState(0);
 
   const handleChatClick = () => {
-    alert("Opening AI Chatbot... (You can integrate your chatbot modal here)");
+    navigate("/chatbot"); 
   };
 
   const stories = [
@@ -47,7 +47,7 @@ const Home = () => {
   return (
     <Box sx={{ backgroundColor: "#fff", fontFamily: "Segoe UI, sans-serif" }}>
       {/* Hero Section */}
-      <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", px: 12 }}>
+      <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", px: 22 }}>
         <Grid container spacing={8} alignItems="center" justifyContent="center">
           <Grid item xs={12} md={6}>
             <Box maxWidth={580} margin="auto">
@@ -108,13 +108,14 @@ const Home = () => {
         </Grid>
       </Box>
 
+
       {/* What We Offer Section */}
       <Box sx={{ backgroundColor: "#F0F4F8", py: 6 }}>
         <Typography variant="h4" align="center" mb={5} fontWeight="bold" color="#0a5666">
           WHAT WE OFFER
         </Typography>
 
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 4, flexWrap: "wrap" }}>
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 4, flexWrap: "wrap"}}>
           {[
             {
               count: "Secure Donations",
@@ -175,9 +176,10 @@ const Home = () => {
         </Box>
       </Box>
 
+
       {/* Impactful Journeys Section */}
       <Box sx={{ textAlign: "center", py: 6 }}>
-      <Typography variant="h4" color="#2e7d32" fontWeight="bold">
+      <Typography variant="h4" color="#0a5666" fontWeight="bold">
         IMPACTFUL JOURNEYS
       </Typography>
       <Typography variant="h6" mt={2} mb={4}>
@@ -285,19 +287,22 @@ const Home = () => {
               </Typography>
 
               <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: "#2e7d32",
-                  textTransform: "none",
-                  px: 6,
-                  py: 1.2,
-                  mt: 2, 
-                }}
-              >
+                  variant="contained"
+                  onClick={() => navigate("/ContactUs")}
+                  sx={{
+                    backgroundColor: "#2e7d32",
+                    textTransform: "none",
+                    px: 6,
+                    py: 1.2,
+                    mt: 2, 
+                    "&:hover": { backgroundColor: "#46691a" },
+                  }}
+                >
                 Contact Us
               </Button>
             </Grid>
 
+            
             {/* Right Side */}
             <Grid item xs={12} md={5}>
             <Box
@@ -360,7 +365,7 @@ const Home = () => {
             flexDirection: { xs: "column", md: "row" },
             alignItems: "center",
             textAlign: { xs: "center", md: "left" },
-            gap: 2,
+            gap: 4,
           }}
         >
           <Typography
@@ -387,37 +392,36 @@ const Home = () => {
 
 
           {/* Fixed AI Chatbot Icon */}
-      <Tooltip title="Need help? Ask AI">
-        <IconButton
-          onClick={handleChatClick}
-          sx={{
-            position: "fixed",
-            bottom: 60,
-            right: 70,
-            backgroundColor: "#2f95ae",
-            zIndex: 9999,
-            "&:hover": {
-              backgroundColor: "#1d7b92",
-            },
-            width: 60,
-            height: 60,
-            boxShadow: 4,
-            padding: 0,
-          }}
-        >
-          <Box
-            component="img"
-            src={`${process.env.PUBLIC_URL}/assets/chatbot.png`}
-            alt="AI"
+        <Tooltip title="Need help? Ask AI">
+          <IconButton
+            onClick={handleChatClick}
             sx={{
+              position: "fixed",
+              bottom: 60,
+              right: 70,
+              backgroundColor: "#2f95ae",
+              zIndex: 9999,
+              "&:hover": { backgroundColor: "#1d7b92" },
               width: 60,
               height: 60,
-              borderRadius: "50%",
-              objectFit: "cover",
+              boxShadow: 4,
+              padding: 0,
             }}
-          />
-        </IconButton>
-      </Tooltip>
+          >
+            <Box
+              component="img"
+              src={`${process.env.PUBLIC_URL}/assets/chatbot.png`}
+              alt="AI"
+              sx={{
+                width: 60,
+                height: 60,
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
+          </IconButton>
+        </Tooltip>  
+      
     </Box>
   );
 };

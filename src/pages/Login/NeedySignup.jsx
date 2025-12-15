@@ -179,7 +179,7 @@ const NeedySignup = () => {
         {cnicPreview && (
           <Box mt={1} textAlign="center">
             <Typography variant="caption" color="textSecondary">
-              CNIC Preview: 
+              Image Preview:   
             </Typography>
             <Box component="img" src={cnicPreview} alt="CNIC" sx={{ width: 120, mt: 1, borderRadius: 1 }} />
           </Box>

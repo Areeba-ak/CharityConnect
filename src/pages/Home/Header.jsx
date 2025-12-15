@@ -33,12 +33,12 @@ const Header = () => {
           </Typography>
         </Box>
 
-        {/* Navigation Links */}
+         {/* Navigation Links */}
         <Box sx={{ display: { xs: "none", sm: "block" } }}>
           <Button color="inherit" sx={{ mx: 1 }} onClick={() => navigate("/")}>Home</Button>
-          <Button color="inherit" sx={{ mx: 1 }}>About us</Button>
-          <Button color="inherit" sx={{ mx: 1 }}>News & Stories</Button>
-          <Button color="inherit" sx={{ mx: 1 }}>Contact US</Button>
+          <Button color="inherit" sx={{ mx: 1 }} onClick={() => navigate("/AboutUs")}>About us</Button>
+          <Button color="inherit" sx={{ mx: 1 }} onClick={() => navigate("/NewsStories")}>News & Stories</Button>
+          <Button color="inherit" sx={{ mx: 1 }} onClick={() => navigate("/ContactUs")}>Contact US</Button>
         </Box>
 
         {/* Donate Button */}
