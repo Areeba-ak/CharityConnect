@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import {Box,TextField,Button,Typography,Paper,Divider,InputAdornment,IconButton,} from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  Divider,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
@@ -10,34 +19,39 @@ const DonorLogin = () => {
     email: "",
     password: "",
   });
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError("");
+    setErrors({ ...errors, [e.target.name]: "" }); // Clear specific error
+  };
+
+  const validate = () => {
+    let tempErrors = {};
+
+    if (!formData.email) tempErrors.email = "Email is required";
+    else if (!formData.email.endsWith("@gmail.com")) {
+      tempErrors.email = "Email must be in @gmail.com format";
+    }
+
+    if (!formData.password) tempErrors.password = "Password is required";
+    else if (formData.password.length < 8) {
+      tempErrors.password = "Password must be at least 8 characters";
+    }
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
   };
 
   const handleSubmit = () => {
-    const { email, password } = formData;
-
-    if (!email || !password) {
-      setError("Please fill out all the fields.");
-      return;
+    if (validate()) {
+      // Call backend API here
+      // On success → redirect to Donor Dashboard
+      navigate("/donor/dashboard");
     }
-
-    alert("Login successful!");
-    // You can route to dashboard or home here
-  };
-
-  const handleGoogleLogin = () => {
-    alert("Redirecting to Google login...");
-  };
-
-  const handleFacebookLogin = () => {
-    alert("Redirecting to Facebook login...");
   };
 
   return (
@@ -49,25 +63,13 @@ const DonorLogin = () => {
         justifyContent: "center",
         alignItems: "center",
         padding: 2,
+        marginTop: 4
       }}
     >
-      <Paper
-        elevation={3}
-        sx={{
-          width: 360,
-          p: 4,
-          borderRadius: 3,
-        }}
-      >
+      <Paper elevation={3} sx={{ width: 360, p: 4, borderRadius: 3 }}>
         <Typography variant="h5" align="center" gutterBottom>
           𝐃𝐎𝐍𝐎𝐑 LOGIN
         </Typography>
-
-        {error && (
-          <Typography color="error" variant="body2" sx={{ mb: 1 }}>
-            {error}
-          </Typography>
-        )}
 
         <TextField
           label="Email"
@@ -76,6 +78,8 @@ const DonorLogin = () => {
           margin="normal"
           value={formData.email}
           onChange={handleChange}
+          error={Boolean(errors.email)}
+          helperText={errors.email}
         />
 
         <TextField
@@ -86,10 +90,12 @@ const DonorLogin = () => {
           margin="normal"
           value={formData.password}
           onChange={handleChange}
+          error={Boolean(errors.password)}
+          helperText={errors.password}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={handleTogglePassword} edge="end">
+                <IconButton onClick={handleTogglePassword}>
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
@@ -126,47 +132,51 @@ const DonorLogin = () => {
         <Divider sx={{ my: 2 }}>OR</Divider>
 
         <Button
-          onClick={handleFacebookLogin}
           fullWidth
+          component="a"
+          href="https://www.facebook.com/login"
+          target="_blank"
+          rel="noopener noreferrer"
           sx={{
             backgroundColor: "#fff",
             color: "#000",
             textTransform: "none",
             border: "1px solid #ccc",
-            gap: 1.5,
             "&:hover": { backgroundColor: "#f5f5f5" },
           }}
-          startIcon={
+        >
+          {
             <img
               src={`${process.env.PUBLIC_URL}/assets/facebook.jpeg`}
-              alt="Facebook"
+              alt="Google"
               style={{ width: 24, height: 24 }}
             />
           }
-        >
           Login with Facebook
         </Button>
 
         <Button
-          onClick={handleGoogleLogin}
           fullWidth
+          component="a"
+          href="https://accounts.google.com/signin"
+          target="_blank"
+          rel="noopener noreferrer"
           sx={{
             backgroundColor: "#fff",
             color: "#000",
             mt: 1.5,
             textTransform: "none",
             border: "1px solid #ccc",
-            gap: 1.5,
             "&:hover": { backgroundColor: "#f5f5f5" },
           }}
-          startIcon={
+        >
+          {
             <img
               src={`${process.env.PUBLIC_URL}/assets/google.jpeg`}
               alt="Google"
               style={{ width: 24, height: 24 }}
             />
           }
-        >
           Login with Google
         </Button>
       </Paper>

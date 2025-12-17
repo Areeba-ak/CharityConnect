@@ -3,9 +3,8 @@ import { Box, Typography, Paper, Button } from "@mui/material";
 
 const PaypalPayment = () => {
   const handlePayPalRedirect = () => {
-    // DEMO — in real projects your backend generates PayPal token URL
-    alert("Redirecting to PayPal (Demo)");
-    // Example: window.location.href = "https://www.sandbox.paypal.com/checkoutnow?token=your_real_token";
+    window.location.href =
+      "https://www.paypal.com/signin?returnUri=https%3A%2F%2Fwww.paypal.com%2Fbusinessmanage%2Fprofile%2FloginSecurity";
   };
 
   return (
@@ -20,7 +19,6 @@ const PaypalPayment = () => {
         p: 3,
       }}
     >
-      {/* PAGE HEADING */}
       <Typography
         variant="h4"
         fontWeight="bold"
@@ -29,7 +27,6 @@ const PaypalPayment = () => {
         PAYPAL PAYMENT
       </Typography>
 
-      {/* WHITE BOX */}
       <Paper
         elevation={3}
         sx={{
@@ -42,12 +39,13 @@ const PaypalPayment = () => {
         }}
       >
         <Typography variant="subtitle1" sx={{ mb: 3 }}>
-          You will be redirected to PayPal’s secure checkout.
+          You will be redirected to PayPal’s secure login page.
         </Typography>
 
         <Button
           fullWidth
           variant="contained"
+          onClick={handlePayPalRedirect}
           sx={{
             bgcolor: "#003087",
             py: 1.3,
@@ -55,7 +53,6 @@ const PaypalPayment = () => {
             borderRadius: 2,
             "&:hover": { bgcolor: "#012a6c" },
           }}
-          onClick={handlePayPalRedirect}
         >
           Continue to PayPal
         </Button>

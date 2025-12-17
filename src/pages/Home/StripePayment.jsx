@@ -3,8 +3,8 @@ import { Box, Typography, Paper, Button } from "@mui/material";
 
 const StripePayment = () => {
   const handleStripeRedirect = () => {
-    // DEMO REDIRECT — real app uses backend Stripe session
-    window.location.href = "https://checkout.stripe.com/pay/demo_12345";
+    // Direct redirect to Stripe login page (FYP demo)
+    window.location.href = "https://dashboard.stripe.com/login";
   };
 
   return (
@@ -19,7 +19,6 @@ const StripePayment = () => {
         p: 3,
       }}
     >
-      {/* PAGE HEADING */}
       <Typography
         variant="h4"
         fontWeight="bold"
@@ -28,7 +27,6 @@ const StripePayment = () => {
         STRIPE PAYMENT
       </Typography>
 
-      {/* WHITE BOX */}
       <Paper
         elevation={3}
         sx={{
@@ -41,20 +39,20 @@ const StripePayment = () => {
         }}
       >
         <Typography variant="subtitle1" sx={{ mb: 3 }}>
-          You will be redirected to Stripe’s secure payment page.
+          You will be redirected to Stripe’s secure login page.
         </Typography>
 
         <Button
           fullWidth
           variant="contained"
+          onClick={handleStripeRedirect}
           sx={{
-            bgcolor: "#635bff",
+            bgcolor: "#635bff", // Stripe color
             py: 1.3,
             textTransform: "none",
             borderRadius: 2,
-            "&:hover": { bgcolor: "#4a43e0" },
+            "&:hover": { bgcolor: "#5148d8" },
           }}
-          onClick={handleStripeRedirect}
         >
           Continue to Stripe
         </Button>

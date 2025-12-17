@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Box, TextField, Button,Typography,Paper,Divider,InputAdornment,IconButton,MenuItem,} from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  Divider,
+  InputAdornment,
+  IconButton,
+  MenuItem,
+} from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
@@ -19,15 +29,16 @@ const DonorSignup = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError(""); // Clear errors on change
+    setErrors({ ...errors, [e.target.name]: "" }); // Clear specific error
   };
 
-  const handleSubmit = () => {
+  const validate = () => {
+    const tempErrors = {};
     const {
       firstName,
       lastName,
@@ -40,60 +51,57 @@ const DonorSignup = () => {
       confirmPassword,
     } = formData;
 
-    if (
-      !firstName ||
-      !lastName ||
-      !email ||
-      !dob ||
-      !gender ||
-      !address ||
-      !city ||
-      !password ||
-      !confirmPassword
-    ) {
-      setError("Please fill out all fields.");
-      return;
-    }
+    if (!firstName) tempErrors.firstName = "First name is required";
+    if (!lastName) tempErrors.lastName = "Last name is required";
+    if (!email) tempErrors.email = "Email is required";
+    else if (!email.endsWith("@gmail.com"))
+      tempErrors.email = "Email must be @gmail.com";
+    if (!dob) tempErrors.dob = "Date of birth is required";
+    if (!gender) tempErrors.gender = "Gender is required";
+    if (!address) tempErrors.address = "Address is required";
+    if (!city) tempErrors.city = "City is required";
+    if (!password) tempErrors.password = "Password is required";
+    else if (password.length < 8)
+      tempErrors.password = "Password must be at least 8 characters";
+    if (!confirmPassword) tempErrors.confirmPassword = "Confirm password is required";
+    else if (password !== confirmPassword)
+      tempErrors.confirmPassword = "Passwords do not match";
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    alert("Signup successful!");
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
   };
 
-  const handleGoogleSignup = () => {
-    alert("Redirecting to Google signup...");
-  };
-
-  const handleFacebookSignup = () => {
-    alert("Redirecting to Facebook signup...");
+  const handleSubmit = () => {
+    if (validate()) {
+      // Call backend API here
+      // On success → redirect to donor dashboard
+      navigate("/donor/dashboard"); 
+    }
   };
 
   return (
-      <Box
+    <Box
+      sx={{
+        background: "#f0f4f8",
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 2,
+        overflow: "auto",
+        marginTop: 6
+      }}
+    >
+      <Paper
+        elevation={3}
         sx={{
-          background: "#f0f4f8",
-          minHeight: "100vh",
-          display: "flex",
-          marginTop: 6,
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 2,
-          overflow: "auto",
+          width: "100%",
+          maxWidth: 420,
+          mt: 7,
+          p: 4,
+          borderRadius: 3,
         }}
       >
-        <Paper
-          elevation={3}
-          sx={{
-            width: "100%",
-            maxWidth: 420,
-            marginTop: 7,
-            p: 4,
-            borderRadius: 3,
-          }}
-        >
         <Typography variant="h5" align="center" gutterBottom>
           𝐃𝐎𝐍𝐎𝐑 SIGNUP
         </Typography>
@@ -103,18 +111,20 @@ const DonorSignup = () => {
           name="firstName"
           fullWidth
           margin="normal"
-          required
           value={formData.firstName}
           onChange={handleChange}
+          error={Boolean(errors.firstName)}
+          helperText={errors.firstName}
         />
         <TextField
           label="Last Name"
           name="lastName"
           fullWidth
           margin="normal"
-          required
           value={formData.lastName}
           onChange={handleChange}
+          error={Boolean(errors.lastName)}
+          helperText={errors.lastName}
         />
         <TextField
           label="Email"
@@ -122,9 +132,10 @@ const DonorSignup = () => {
           type="email"
           fullWidth
           margin="normal"
-          required
           value={formData.email}
           onChange={handleChange}
+          error={Boolean(errors.email)}
+          helperText={errors.email}
         />
         <TextField
           label="Date of Birth"
@@ -132,10 +143,11 @@ const DonorSignup = () => {
           type="date"
           fullWidth
           margin="normal"
-          required
           InputLabelProps={{ shrink: true }}
           value={formData.dob}
           onChange={handleChange}
+          error={Boolean(errors.dob)}
+          helperText={errors.dob}
         />
         <TextField
           select
@@ -143,9 +155,10 @@ const DonorSignup = () => {
           name="gender"
           fullWidth
           margin="normal"
-          required
           value={formData.gender}
           onChange={handleChange}
+          error={Boolean(errors.gender)}
+          helperText={errors.gender}
         >
           <MenuItem value="Male">Male</MenuItem>
           <MenuItem value="Female">Female</MenuItem>
@@ -155,18 +168,20 @@ const DonorSignup = () => {
           name="address"
           fullWidth
           margin="normal"
-          required
           value={formData.address}
           onChange={handleChange}
+          error={Boolean(errors.address)}
+          helperText={errors.address}
         />
         <TextField
           label="City"
           name="city"
           fullWidth
           margin="normal"
-          required
           value={formData.city}
           onChange={handleChange}
+          error={Boolean(errors.city)}
+          helperText={errors.city}
         />
         <TextField
           label="Password"
@@ -174,9 +189,10 @@ const DonorSignup = () => {
           type={showPassword ? "text" : "password"}
           fullWidth
           margin="normal"
-          required
           value={formData.password}
           onChange={handleChange}
+          error={Boolean(errors.password)}
+          helperText={errors.password}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -193,9 +209,10 @@ const DonorSignup = () => {
           type={showConfirm ? "text" : "password"}
           fullWidth
           margin="normal"
-          required
           value={formData.confirmPassword}
           onChange={handleChange}
+          error={Boolean(errors.confirmPassword)}
+          helperText={errors.confirmPassword}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -206,12 +223,6 @@ const DonorSignup = () => {
             ),
           }}
         />
-
-        {error && (
-          <Typography color="error" fontSize={14} sx={{ mt: 1 }}>
-            {error}
-          </Typography>
-        )}
 
         <Button
           variant="contained"
@@ -235,7 +246,6 @@ const DonorSignup = () => {
         <Divider sx={{ my: 2 }}>Or</Divider>
 
         <Button
-          onClick={handleFacebookSignup}
           fullWidth
           sx={{
             backgroundColor: "#fff",
@@ -252,12 +262,15 @@ const DonorSignup = () => {
               style={{ width: 24, height: 24 }}
             />
           }
+          component="a"
+          href="https://www.facebook.com/login"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Signup with Facebook
         </Button>
 
         <Button
-          onClick={handleGoogleSignup}
           fullWidth
           sx={{
             backgroundColor: "#fff",
@@ -275,6 +288,10 @@ const DonorSignup = () => {
               style={{ width: 24, height: 24 }}
             />
           }
+          component="a"
+          href="https://accounts.google.com/signin"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Signup with Google
         </Button>
