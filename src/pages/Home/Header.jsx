@@ -24,9 +24,9 @@ const Header = () => {
         {/* Logo and Title */}
         <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, pl: 6 }}>
           <Avatar
-            src={`${process.env.PUBLIC_URL}/assets/Logo.png`}
+            src={`${process.env.PUBLIC_URL}/assets/image1.png`}
             alt="Logo"
-            sx={{ width: 40, height: 40, mr: 1 }}
+            sx={{ width: 60, height: 60, mr: 0 }}
           />
           <Typography variant="h5" sx={{ fontWeight: "bold" }}>
             CharityConnect

@@ -11,7 +11,7 @@ import {
   MenuItem,
   FormControl,
   Select,
-  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 
 const steps = ["Personal Information", "Story Details", "Supporting Documents"];
@@ -28,26 +28,94 @@ const SubmitStory = () => {
     phone: "",
     address: "",
     city: "",
-    maritalStatus: "",
     storyDetails: "",
+    files: [],
   });
 
-  const [category, setCategory] = useState("");
+  const [errors, setErrors] = useState({});
 
-  const handleNext = () => setActiveStep((prev) => prev + 1);
-  const handleBack = () => setActiveStep((prev) => prev - 1);
-
+  // Handle input changes
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = () => console.log("Form Data Submitted:", formData);
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, files: Array.from(e.target.files) });
+  };
+
+  // Validate current step when clicking Next/Submit
+  const validateStep = (step) => {
+    let tempErrors = {};
+
+    if (step === 0) {
+      if (!formData.firstName) tempErrors.firstName = "First Name is required";
+      if (!formData.lastName) tempErrors.lastName = "Last Name is required";
+      if (!formData.email) tempErrors.email = "Email is required";
+      else if (!/\S+@\S+\.\S+/.test(formData.email))
+        tempErrors.email = "Email is invalid";
+      if (!formData.dob) tempErrors.dob = "Date of Birth is required";
+      if (!formData.gender) tempErrors.gender = "Gender is required";
+      if (!formData.phone) tempErrors.phone = "Phone number is required";
+      else if (!/^\d{10,15}$/.test(formData.phone))
+        tempErrors.phone = "Phone number is invalid";
+      if (!formData.address) tempErrors.address = "Address is required";
+      if (!formData.city) tempErrors.city = "City is required";
+    }
+
+    if (step === 1) {
+      const wordCount = formData.storyDetails.trim().split(/\s+/).filter(Boolean).length;
+      if (!formData.storyDetails) tempErrors.storyDetails = "Story is required";
+      else if (wordCount < 20)
+        tempErrors.storyDetails = "Story must be at least 20 words";
+    }
+
+    if (step === 2) {
+      if (!formData.files || formData.files.length === 0)
+        tempErrors.files = "Please upload at least one document";
+    }
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (validateStep(activeStep)) setActiveStep((prev) => prev + 1);
+  };
+
+  const handleBack = () => setActiveStep((prev) => prev - 1);
+
+  // Submit handler with reset
+  const handleSubmit = () => {
+    if (validateStep(activeStep)) {
+      console.log("Form Data Submitted:", formData);
+      alert("Form submitted successfully!");
+
+      // Reset form
+      setFormData({
+        firstName: "",
+        lastName: "",
+        gender: "",
+        dob: "",
+        email: "",
+        phone: "",
+        address: "",
+        city: "",
+        storyDetails: "",
+        files: [],
+      });
+
+      // Clear errors
+      setErrors({});
+
+      // Go back to first step
+      setActiveStep(0);
+    }
+  };
 
   const renderStepContent = (step) => {
     switch (step) {
       case 0:
         return (
           <Grid container spacing={3} sx={{ mt: 2 }}>
-          
             <Grid item xs={12} sm={4}>
               <TextField
                 label="First Name"
@@ -56,9 +124,10 @@ const SubmitStory = () => {
                 required
                 value={formData.firstName}
                 onChange={handleChange}
+                error={!!errors.firstName}
+                helperText={errors.firstName}
               />
             </Grid>
-
             <Grid item xs={12} sm={4}>
               <TextField
                 label="Last Name"
@@ -67,9 +136,10 @@ const SubmitStory = () => {
                 required
                 value={formData.lastName}
                 onChange={handleChange}
+                error={!!errors.lastName}
+                helperText={errors.lastName}
               />
             </Grid>
-
             <Grid item xs={12} sm={4}>
               <TextField
                 label="Email"
@@ -77,13 +147,13 @@ const SubmitStory = () => {
                 type="email"
                 fullWidth
                 required
-                placeholder="@gmail.com"
                 value={formData.email}
                 onChange={handleChange}
+                error={!!errors.email}
+                helperText={errors.email}
               />
             </Grid>
-
-             <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 label="Date of Birth"
                 name="dob"
@@ -93,25 +163,27 @@ const SubmitStory = () => {
                 InputLabelProps={{ shrink: true }}
                 value={formData.dob}
                 onChange={handleChange}
+                error={!!errors.dob}
+                helperText={errors.dob}
               />
             </Grid>
-
             <Grid item xs={12} sm={4}>
-              <FormControl fullWidth size="medium ">
-                  <Select
-                    displayEmpty
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    renderValue={(selected) =>
-                      selected ? selected : "Select Gender"
-                    }
-                  >
-                    <MenuItem value="Male">Male</MenuItem>
-                    <MenuItem value="Female">Female</MenuItem>
-                  </Select>
-                </FormControl>
+              <FormControl fullWidth error={!!errors.gender}>
+                <Select
+                  displayEmpty
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  renderValue={(selected) =>
+                    selected ? selected : "Select Gender"
+                  }
+                >
+                  <MenuItem value="Male">Male</MenuItem>
+                  <MenuItem value="Female">Female</MenuItem>
+                </Select>
+                <FormHelperText>{errors.gender}</FormHelperText>
+              </FormControl>
             </Grid>
-
             <Grid item xs={12} sm={4}>
               <TextField
                 label="Contact No"
@@ -121,9 +193,10 @@ const SubmitStory = () => {
                 required
                 value={formData.phone}
                 onChange={handleChange}
+                error={!!errors.phone}
+                helperText={errors.phone}
               />
             </Grid>
-
             <Grid item xs={12} sm={4}>
               <TextField
                 label="Address"
@@ -132,9 +205,10 @@ const SubmitStory = () => {
                 required
                 value={formData.address}
                 onChange={handleChange}
+                error={!!errors.address}
+                helperText={errors.address}
               />
             </Grid>
-
             <Grid item xs={12} sm={4}>
               <TextField
                 label="City"
@@ -143,13 +217,15 @@ const SubmitStory = () => {
                 required
                 value={formData.city}
                 onChange={handleChange}
+                error={!!errors.city}
+                helperText={errors.city}
               />
             </Grid>
-
           </Grid>
         );
 
-      case 1:
+      case 1: {
+        const wordCount = formData.storyDetails.trim().split(/\s+/).filter(Boolean).length;
         return (
           <TextField
             label="Write Your Story Here..."
@@ -161,16 +237,38 @@ const SubmitStory = () => {
             sx={{ mt: 2 }}
             value={formData.storyDetails}
             onChange={handleChange}
+            error={!!errors.storyDetails}
+            helperText={
+              errors.storyDetails
+                ? errors.storyDetails
+                : `${wordCount} / 20 words`
+            }
           />
         );
+      }
 
       case 2:
         return (
           <Box sx={{ mt: 2 }}>
             <Button variant="contained" component="label">
               Upload Supporting Documents
-              <input type="file" hidden multiple />
+              <input
+                type="file"
+                hidden
+                multiple
+                onChange={handleFileChange}
+              />
             </Button>
+            {errors.files && (
+              <Typography color="error" sx={{ mt: 1 }}>
+                {errors.files}
+              </Typography>
+            )}
+            {formData.files.length > 0 && (
+              <Typography sx={{ mt: 1 }}>
+                {formData.files.length} file(s) selected
+              </Typography>
+            )}
           </Box>
         );
 

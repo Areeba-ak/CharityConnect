@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -10,10 +10,12 @@ import {
   FormControl,
   FormHelperText,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const DonationPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const storyData = location.state; // story info from InProgressStoryDetails
 
   const [category, setCategory] = useState("");
   const [formValues, setFormValues] = useState({
@@ -24,6 +26,13 @@ const DonationPage = () => {
     phone: "",
   });
   const [errors, setErrors] = useState({});
+
+  // Auto-fill category if coming from a story
+  useEffect(() => {
+    if (storyData?.category) {
+      setCategory(storyData.category);
+    }
+  }, [storyData]);
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
@@ -39,30 +48,24 @@ const DonationPage = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^[0-9]{10,15}$/;
 
-    // Amount
     if (!formValues.amount) newErrors.amount = "Amount is required";
     else if (isNaN(formValues.amount) || Number(formValues.amount) <= 0)
       newErrors.amount = "Amount must be a positive number";
 
-    // Category
     if (!category) newErrors.category = "Category is required";
 
-    // First Name
     if (!formValues.firstName) newErrors.firstName = "First Name is required";
     else if (!nameRegex.test(formValues.firstName))
       newErrors.firstName = "First Name must contain only letters, min 2 chars";
 
-    // Last Name
     if (!formValues.lastName) newErrors.lastName = "Last Name is required";
     else if (!nameRegex.test(formValues.lastName))
       newErrors.lastName = "Last Name must contain only letters, min 2 chars";
 
-    // Email
     if (!formValues.email) newErrors.email = "Email is required";
     else if (!emailRegex.test(formValues.email))
       newErrors.email = "Enter a valid email address";
 
-    // Phone
     if (!formValues.phone) newErrors.phone = "Phone No is required";
     else if (!phoneRegex.test(formValues.phone))
       newErrors.phone = "Phone No must be 10 digits";
@@ -73,7 +76,14 @@ const DonationPage = () => {
 
   const handleSubmit = () => {
     if (validate()) {
-      navigate("/payment"); 
+      navigate("/payment", {
+        state: {
+          storyId: storyData?.storyId || null,
+          title: storyData?.title || null,
+          category: category,
+          formValues,
+        },
+      });
     }
   };
 
@@ -107,6 +117,12 @@ const DonationPage = () => {
           pl: 7,
         }}
       >
+        {storyData && (
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Donating to: {storyData.title}
+          </Typography>
+        )}
+
         <Grid container spacing={2} sx={{ mb: 3 }}>
           <Grid item xs={6}>
             <TextField
@@ -129,6 +145,7 @@ const DonationPage = () => {
                 value={category}
                 onChange={handleCategoryChange}
                 renderValue={(selected) => (selected ? selected : "Select Category")}
+                disabled={!!storyData} // lock category if story-based
                 MenuProps={{
                   PaperProps: { style: { maxHeight: 200, overflowY: "auto" } },
                 }}
